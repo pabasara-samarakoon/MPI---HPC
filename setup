@@ -1,0 +1,178 @@
+open visualStudio 2022
+configure the file -> download msi and exe file and install
+create project 
+open cmd and check files
+ Microsoft Windows [Version 10.0.26100.4652]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\iotuser>where mpiexec
+C:\Program Files\Microsoft MPI\Bin\mpiexec.exe
+
+C:\Users\iotuser>set MSMPI
+MSMPI_BENCHMARKS=C:\Program Files\Microsoft MPI\Benchmarks\
+MSMPI_BIN=C:\Program Files\Microsoft MPI\Bin\
+MSMPI_INC=C:\Program Files (x86)\Microsoft SDKs\MPI\Include\
+MSMPI_LIB32=C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\
+MSMPI_LIB64=C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\
+
+do configuration said in configureMPI file
+
+do what if say there
+
+----------------------------------------
+#include <mpi.h>
+#include <stdio.h>
+
+int main(int argc, char** argv) {
+    // Initialize the MPI environment
+    MPI_Init(NULL, NULL);
+
+    // Get the rank of the process
+    int my_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+    // Print the message
+    printf("Hello DCS! My rank is %d\n", my_rank);
+
+    // Finalize the MPI environment.
+    MPI_Finalize();
+}
+
+---------------------------------
+* use build solution to run and below cmd command
+
+C:\Users\iotuser\source\repos\MPIproject1\x64\Debug>mpiexec .\MPIproject1.exe %use project name here
+Hello DCS! My rank is 18
+Hello DCS! My rank is 17
+Hello DCS! My rank is 14
+Hello DCS! My rank is 9
+Hello DCS! My rank is 15
+Hello DCS! My rank is 19
+Hello DCS! My rank is 11
+Hello DCS! My rank is 12
+Hello DCS! My rank is 8
+Hello DCS! My rank is 13
+Hello DCS! My rank is 3
+Hello DCS! My rank is 2
+Hello DCS! My rank is 0
+Hello DCS! My rank is 7
+Hello DCS! My rank is 1
+Hello DCS! My rank is 16
+Hello DCS! My rank is 6
+Hello DCS! My rank is 10
+Hello DCS! My rank is 4
+Hello DCS! My rank is 5
+
+==================================================
+#include <mpi.h>
+#include <stdio.h>
+
+int main(int argc, char** argv) {
+    // Initialize the MPI environment
+    MPI_Init(NULL, NULL);
+
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    // Get the rank of the process
+    int my_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+    // Print the message
+    printf("Hello DCS! My rank is %d out of %d processors \n", my_rank, world_size);
+
+    // Finalize the MPI environment.
+    MPI_Finalize();
+}
+
+--------------------------
+C:\Users\iotuser\source\repos\MPIproject1\x64\Debug>mpiexec .\MPIproject1.exe
+Hello DCS! My rank is 13 out of 20 processors
+Hello DCS! My rank is 11 out of 20 processors
+Hello DCS! My rank is 18 out of 20 processors
+Hello DCS! My rank is 14 out of 20 processors
+Hello DCS! My rank is 7 out of 20 processors
+Hello DCS! My rank is 9 out of 20 processors
+Hello DCS! My rank is 12 out of 20 processors
+Hello DCS! My rank is 10 out of 20 processors
+Hello DCS! My rank is 4 out of 20 processors
+Hello DCS! My rank is 1 out of 20 processors
+Hello DCS! My rank is 3 out of 20 processors
+Hello DCS! My rank is 2 out of 20 processors
+Hello DCS! My rank is 0 out of 20 processors
+Hello DCS! My rank is 8 out of 20 processors
+Hello DCS! My rank is 15 out of 20 processors
+Hello DCS! My rank is 6 out of 20 processors
+Hello DCS! My rank is 19 out of 20 processors
+Hello DCS! My rank is 16 out of 20 processors
+Hello DCS! My rank is 5 out of 20 processors
+Hello DCS! My rank is 17 out of 20 processors
+
+
+*here -n is number of elements we are going to use like set num_threads in openMP
+
+C:\Users\iotuser\source\repos\MPIproject1\x64\Debug>mpiexec -n 4 .\MPIproject1.exe
+Hello DCS! My rank is 1 out of 4 processors
+Hello DCS! My rank is 3 out of 4 processors
+Hello DCS! My rank is 0 out of 4 processors
+Hello DCS! My rank is 2 out of 4 processors
+
+=================================================
+
+
+#include <iostream>
+/*function definition*/
+void half_of(float a, float* half) {
+	*half = a / 2;
+}
+
+
+int main()
+{
+	float a = 5, ha;
+	half_of(a, &ha);
+	printf("Half of %f is %f \n", a, ha);
+
+}
+C:\Users\iotuser\source\repos\MPIproject1\x64\Debug>mpiexec .\MPIproject1.exe
+Half of 5.000000 is 2.500000
+
+=========================================
+#include <iostream>
+/*function definition*/
+void add(int a, int b, int* sum) {
+	*sum = a + b;
+}
+
+int main()
+{
+	int a = 10, b = 5, result;
+	add(a, b, &result);
+	printf("sum of %d and %d is %d \n", a, b, result);
+	
+}
+----------------
+C:\Users\iotuser\source\repos\MPIproject1\x64\Debug>mpiexec .\MPIproject1.exe
+sum of 10 and 5 is 15
+=========================================
+
+#include <iostream>
+/*function definition*/
+void add(int* a, int b) {
+	*a = *a + b;
+}
+
+int main()
+{
+	int x = 10, y = 5, result;
+	add( &x , y);
+	printf("sum is %d \n", x);
+	
+}
+--------------
+C:\Users\iotuser\source\repos\MPIproject1\x64\Debug>mpiexec .\MPIproject1.exe
+sum is 15
+========================================
+
+
+
