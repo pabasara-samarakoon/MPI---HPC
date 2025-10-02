@@ -1,0 +1,31 @@
+#include <mpi.h> 
+#include <iostream>
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+
+	MPI_Init(&argc, &argv);
+
+	int myrank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+
+	if (myrank == 0) {
+		int a = 10;
+		MPI_Send(&a, 1, MPI_INT, 1, 1, MPI_COMM_WORLD);
+		cout << "Process " << myrank << " sent " << a << endl;
+	}
+
+	else if (myrank == 1) {
+		int x;
+		MPI_Recv(&x, 1, MPI_INT, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		cout << "Process " << myrank << " received " << x << endl;
+	}
+
+	MPI_Finalize();
+}
+========================
+C:\Users\iotuser\Documents\2021CSC050\MPIday2\x64\Debug>mpiexec ./MPIday2.exe
+Process 1 received 10
+Process 0 sent 10
+--------------------------------------------------------------------------------
